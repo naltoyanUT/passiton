@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -30,7 +31,13 @@ import com.loopj.android.http.RequestParams;
 import org.apache.http.Header;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by ntoyan on 12/5/2015.
@@ -38,7 +45,7 @@ import java.io.ByteArrayOutputStream;
 public class CreateOfferActivity extends BaseActivity implements AdapterView.OnItemSelectedListener{
 
     private static final int PICK_IMAGE = 1;
-    private static final int USE_IMAGE = 0;
+    private static final int TAKE_IMAGE = 0;
 
     Context context = this;
     private static final String TAG = "image";
@@ -48,7 +55,8 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
     ImageView imgView;
     //TextView txtView;
     String category = "All";
-    EditText nameView;
+    EditText nameView, descriptionView;
+    File uploadfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +88,8 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
         });
 
 
+        descriptionView = (EditText) findViewById(R.id.description);
+
         imgView = (ImageView) findViewById(R.id.thumbnail);
         //txtView = (TextView) findViewById(R.id.text);
 
@@ -100,22 +110,39 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
         );
 
 
+        FloatingActionButton cameraButton =(FloatingActionButton) this.findViewById(R.id.cameraButton);
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                String path = Environment.getExternalStorageDirectory().getPath() + File.separator + "DCIM" + File.separator + "Camera";
+                uploadfile = new File(path, "img" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".jpg");
+                try {
+                    uploadfile.createNewFile();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, TAKE_IMAGE);
+            }
+
+        });
+
         uploadButton = (Button) findViewById(R.id.upload_to_server);
         uploadButton.setEnabled(false);
         uploadButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        // Get photo caption
-
-                        //String photoCaption = commentsText.getText().toString();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-                        byte[] b = baos.toByteArray();
-                        //byte[] encodedImage = Base64.encode(b, Base64.DEFAULT);
-
-                        postToServer(b);
+                        Intent intent = new Intent(context, SelectFriendsActivity.class);
+                        startActivity(intent);
+//                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//                        bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+//                        byte[] b = baos.toByteArray();
+//                        postToServer(b);
                     }
                 });
 
@@ -168,38 +195,34 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
             bitmapImage = BitmapFactory.decodeFile(imageFilePath);
             imgView.setImageBitmap(bitmapImage);
 
-            // Enable the upload button once image has been uploaded
-
-
-            //uploadButton.setEnabled(true);
+        }
+        else if (requestCode == TAKE_IMAGE && data != null && data.getExtras() != null) {
+            Bitmap bm=(Bitmap) data.getExtras().get("data");
+            try {
+                FileOutputStream fout=new FileOutputStream(uploadfile);
+                bm.compress(Bitmap.CompressFormat.JPEG, 100,fout);
+                fout.flush();
+                fout.close();
+                InputStream in =new FileInputStream(uploadfile);
+                bitmapImage = BitmapFactory.decodeFile(uploadfile.getPath());
+                imgView.setImageBitmap(bitmapImage);
+                Log.i(TAG, "path -------------- " + uploadfile.toString());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
         }
-//        }else if(requestCode == USE_IMAGE && data != null){
-//
-//            try {
-//                uploadfile =(File) data.getExtras().get("FILE_NAME");
-//                Log.i(TAG, "path retrieved --------------- " + uploadfile.toString());
-//                bitmapImage = BitmapFactory.decodeFile(uploadfile.getPath());
-//                imgView.setImageBitmap(bitmapImage);
-//                uploadButton.setEnabled(true);
-//
-//            } catch (Exception e) {
-//                // TODO Auto-generated catch block
-//                Log.e(TAG, e.getMessage());
-//            }
-//
-//
-//            //tv.setText(uploadfile.toString());
-//        }
     }
 
 
     private void postToServer(byte[] encodedImage){
         RequestParams params = new RequestParams();
         params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
+        params.put("name", nameView.getText());
         params.put("category", "all");
         params.put("file",new ByteArrayInputStream(encodedImage));
-        params.put("description","this is a test");
+        params.put("description", descriptionView.getText());
         params.put("latitude",0);
         params.put("longitude", 0);
         params.put("friends", "bob,eddy");

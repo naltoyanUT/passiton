@@ -6,9 +6,7 @@
     android:theme="@style/AppTheme.AppBarOverlay"
     android:orientation="vertical"
     tools:context=".CreateOfferActivity"
-    android:focusableInTouchMode="true"
-    android:divider="?android:dividerHorizontal"
-    android:showDividers="middle">
+    android:focusableInTouchMode="true">
 
 
     <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
@@ -20,32 +18,26 @@
         <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
         <!--android:layout_marginBottom="8dp" android:visibility="gone" />-->
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="What would you like to pass on today?"
+        android:id="@+id/initMsg"
+        android:layout_weight=".2"
+        android:textColor="@color/colorAccent"
+        android:padding="20dp" />
+
     <ScrollView android:id="@+id/new_form" android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_weight=".7"
+        android:layout_gravity="top">
 
         <LinearLayout android:id="@+id/item_form" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical"
             android:theme="@style/AppTheme">
 
-
-            <LinearLayout android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Category"
-                    android:layout_gravity="left" />
-                <Spinner
-                    android:id="@+id/categories_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:spinnerMode="dropdown" />
-            </LinearLayout>
 
             <android.support.design.widget.TextInputLayout android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -71,13 +63,41 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <View style="@style/Divider"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_gravity="left"
+                android:layout_marginTop="10dp" />
+            <Spinner
+                android:id="@+id/categories_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:spinnerMode="dropdown"
+                android:layout_marginTop="10dp" />
+
+            <!--<View style="@style/Divider"/>-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Tag with current location?"-->
+            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+            <!--android:layout_gravity="left"-->
+            <!--android:layout_marginTop="10dp" />-->
 
             <android.support.v7.widget.SwitchCompat
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tag with current location?"
-                android:id="@+id/switch1" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/com_facebook_likeview_text_color"
+                android:id="@+id/switch1"
+                android:layout_marginTop="20dp"/>
 
             <View style="@style/Divider"/>
 
@@ -88,7 +108,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="Select image"
+                    android:text="Add image"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:id="@+id/image_text"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentStart="false"
@@ -157,18 +178,20 @@
             android:id="@+id/thumbnail"
             android:adjustViewBounds="true"
             android:visibility="visible"
-            android:layout_marginLeft="5dp" />
+            android:layout_marginLeft="5dp"
+                android:src="@drawable/no_photo"
+                android:scaleType="fitCenter" />
 
-            <View style="@style/Divider"/>
-
-            <Button android:id="@+id/upload_to_server" style="?android:textAppearanceSmall"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" android:text="Next"
-                android:textStyle="bold"
-                android:layout_gravity="bottom" />
 
         </LinearLayout>
     </ScrollView>
+
+    <Button android:id="@+id/upload_to_server" style="?android:textAppearanceSmall"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="Next"
+        android:textStyle="bold"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="10dp" />
 </LinearLayout>
 <!--<?xml version="1.0" encoding="utf-8"?>-->
 <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->

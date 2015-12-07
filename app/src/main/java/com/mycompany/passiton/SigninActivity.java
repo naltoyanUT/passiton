@@ -24,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 
 public class SigninActivity extends Activity {
 
@@ -36,6 +38,7 @@ public class SigninActivity extends Activity {
     Activity activity = this;
     private ProgressDialog progressDialog;
     String email = "not set yet";
+    public static ArrayList<String> friends = new ArrayList<String>();
 
     public boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -61,37 +64,7 @@ public class SigninActivity extends Activity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         //Toast.makeText(context, "Gathering your info..", Toast.LENGTH_SHORT).show();
-                        GraphRequest request = GraphRequest.newMyFriendsRequest(
-                                loginResult.getAccessToken(),
-                                new GraphRequest.GraphJSONArrayCallback() {
-                                    @Override
-                                    public void onCompleted(
-                                            JSONArray object,
-                                            GraphResponse response) {
-                                        // Application code
-                                        Log.v(TAG, response.toString());
-
-                                        for (int i = 0, size = object.length(); i < size; i++) {
-                                            JSONObject friend = null;
-                                            try {
-                                                friend = object.getJSONObject(i);
-                                                String id = friend.getString("id");
-                                                String name = friend.getString("name");
-                                                Log.i(TAG, "name/id=" + name + "/" + id);
-
-                                            } catch (JSONException e) {
-                                                Log.e(TAG, e.toString());
-                                            }
-                                        }
-                                        //email = "najd.altoyan@gmail.com";
-                                    }
-                                });
-//                        Bundle parameters = new Bundle();
-//                        parameters.putString("fields", "id,name,email,gender, birthday");
-//                        request.setParameters(parameters);
-                        request.executeAsync();
-
-
+                        updateFriends(loginResult.getAccessToken());
                         // finish();
                     }
 
@@ -108,6 +81,42 @@ public class SigninActivity extends Activity {
 
    }
 
+    private void updateFriends(AccessToken accessToken)
+    {
+        GraphRequest request = GraphRequest.newMyFriendsRequest(
+                accessToken,
+                new GraphRequest.GraphJSONArrayCallback() {
+                    @Override
+                    public void onCompleted(
+                            JSONArray object,
+                            GraphResponse response) {
+                        // Application code
+                        Log.v(TAG, response.toString());
+
+                        for (int i = 0, size = object.length(); i < size; i++) {
+                            JSONObject friend = null;
+                            try {
+                                friend = object.getJSONObject(i);
+                                String id = friend.getString("id");
+                                String name = friend.getString("name");
+                                friends.add(name);
+                                //friends.add(new Friend(id, name));
+
+                                Log.i(TAG, "FRIENDS name/id=" + name + "/" + id);
+
+
+                            } catch (JSONException e) {
+                                Log.e(TAG, e.toString());
+                            }
+                        }
+                        //email = "najd.altoyan@gmail.com";
+                    }
+                });
+//                        Bundle parameters = new Bundle();
+//                        parameters.putString("fields", "id,name,email,gender, birthday");
+//                        request.setParameters(parameters);
+        request.executeAsync();
+    }
 
     @Override
     public void onResume()
@@ -120,7 +129,7 @@ public class SigninActivity extends Activity {
             Log.i(TAG, "user id = " + accessToken.getUserId());
 
             GraphRequest request = new GraphRequest(
-                    AccessToken.getCurrentAccessToken(),
+                    accessToken,
                     "/"+accessToken.getUserId(),
                     null,
                     HttpMethod.GET,
@@ -131,7 +140,7 @@ public class SigninActivity extends Activity {
                                 email = json.getString("email");
                                 Log.i(TAG, "name/email=" + json.getString("name") + "/" + email);
                             } catch (JSONException e) {
-                                e.printStackTrace();
+                                Log.d(TAG, e.toString());
                             }
                         }
                     }
@@ -140,6 +149,8 @@ public class SigninActivity extends Activity {
             parameters.putString("fields", "name,email");
             request.setParameters(parameters);
             request.executeAsync();
+
+            updateFriends(accessToken);
 
             Intent intent = new Intent(context, MainActivity.class);
             intent.putExtra("EMAIL", email);
