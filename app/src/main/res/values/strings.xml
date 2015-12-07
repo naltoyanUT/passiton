@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">PassItOn</string>
+    <string name="activity_main">PassItOn</string>
+
+    <string name="facebook_app_id">503439603161068</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_logout">Log out</string>
+    <!--<string name="tab_offers_name">Offers</string>-->
+    <!--<string name="tab_mylist_name">My List</string>-->
+
+    <string-array name="categories_array">
+        <item>All</item>
+        <item>Food</item>
+        <item>Toys</item>
+        <item>Electronics</item>
+        <item>Cleaning products</item>
+        <item>Kitchen</item>
+        <item>Office</item>
+        <item>Bed and Bath</item>
+        <item>Other</item>
+    </string-array>
+</resources>
