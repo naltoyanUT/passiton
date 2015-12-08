@@ -20,17 +20,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
-import org.apache.http.Header;
-
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -44,6 +37,7 @@ import java.util.Date;
  */
 public class CreateOfferActivity extends BaseActivity implements AdapterView.OnItemSelectedListener{
 
+    public static final int UPLOAD = 2;
     private static final int PICK_IMAGE = 1;
     private static final int TAKE_IMAGE = 0;
 
@@ -137,12 +131,15 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                        byte[] encodedImage = baos.toByteArray();
                         Intent intent = new Intent(context, SelectFriendsActivity.class);
-                        startActivity(intent);
-//                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                        bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-//                        byte[] b = baos.toByteArray();
-//                        postToServer(b);
+                        intent.putExtra("name", nameView.getText().toString());
+                        intent.putExtra("category", "all");
+                        intent.putExtra("encodedImage", encodedImage);
+                        intent.putExtra("description", descriptionView.getText().toString());
+                        startActivityForResult(intent, UPLOAD);
                     }
                 });
 
@@ -213,34 +210,12 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
             }
 
         }
+        else if (requestCode == UPLOAD && data != null && data.getExtras() != null)
+        {
+            boolean success = data.getExtras().getBoolean("success", false);
+            if(success) finish();
+        }
     }
 
 
-    private void postToServer(byte[] encodedImage){
-        RequestParams params = new RequestParams();
-        params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
-        params.put("name", nameView.getText());
-        params.put("category", "all");
-        params.put("file",new ByteArrayInputStream(encodedImage));
-        params.put("description", descriptionView.getText());
-        params.put("latitude",0);
-        params.put("longitude", 0);
-        params.put("friends", "bob,eddy");
-      //  Log.i(TAG, "lat and long ----------- " + latitude + ", " + longitude);
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.setUserAgent("android");
-        client.post("http://apt-passiton.appspot.com/new", params, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                Log.w("async", "success!!!!");
-                Toast.makeText(context, "Upload Successful", Toast.LENGTH_SHORT).show();
-                imgView.setImageBitmap(null);
-                uploadButton.setEnabled(false);
-            }
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                Log.e(TAG, "There was a problem in uploading the image : " + e.toString());
-            }
-        });
-    }
 }

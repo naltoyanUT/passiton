@@ -38,7 +38,8 @@ public class SigninActivity extends Activity {
     Activity activity = this;
     private ProgressDialog progressDialog;
     String email = "not set yet";
-    public static ArrayList<String> friends = new ArrayList<String>();
+    //public static ArrayList<String> friends = new ArrayList<String>();
+    public static ArrayList<Friend> friends = new ArrayList<Friend>();
 
     public boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -99,8 +100,11 @@ public class SigninActivity extends Activity {
                                 friend = object.getJSONObject(i);
                                 String id = friend.getString("id");
                                 String name = friend.getString("name");
-                                friends.add(name);
-                                //friends.add(new Friend(id, name));
+                                //friends.add(name);
+                                friends.add(new Friend(id, name));
+                                friends.add(new Friend("12345678", "Alice A"));
+                                friends.add(new Friend("98765432", "Bob B"));
+
 
                                 Log.i(TAG, "FRIENDS name/id=" + name + "/" + id);
 

@@ -79,7 +79,7 @@ public class OffersSectionFragment extends Fragment implements AdapterView.OnIte
     {
         final String request_url = "http://apt-passiton.appspot.com/offers";
         RequestParams params = new RequestParams();
-        params.put("user_id", "bob");
+        params.put("user_id", "Alice A");
         params.put("category", category.toLowerCase());
         final AsyncHttpClient httpClient = new AsyncHttpClient();
         httpClient.setUserAgent("android");

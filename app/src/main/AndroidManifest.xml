@@ -41,13 +41,13 @@
             android:parentActivityName=".MainActivity">
         </activity>
 
-
         <activity
             android:name=".SelectFriendsActivity"
             android:label="@string/activity_main"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".CreateOfferActivity">
         </activity>
+
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
     </application>

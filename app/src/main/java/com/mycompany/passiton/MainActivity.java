@@ -19,7 +19,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -232,15 +232,15 @@ public class MainActivity extends BaseActivity
                                      Bundle savedInstanceState) {
                 View rootView = inflater.inflate(R.layout.fragment_section_mylist, container, false);
                 createData();
-                //ExpandableListView listView = (ExpandableListView) rootView.findViewById(R.id.listView);
-                ListView listView = (ListView) rootView.findViewById(R.id.listView);
-                //ExpandableListAdapter adapter = new ExpandableListAdapter(getActivity(), groups);
-                //listView.setAdapter(adapter);
+                ExpandableListView listView = (ExpandableListView) rootView.findViewById(R.id.listView);
+                //ListView listView = (ListView) rootView.findViewById(R.id.listView);
+                ExpandableListAdapter adapter = new ExpandableListAdapter(getActivity(), groups);
+                listView.setAdapter(adapter);
 
-
-                MyListObject myList = new MyListObject(getActivity(), R.layout.listrow_details);
-                listView.setAdapter(myList);
-                myList.setListView(listView);
+//
+//                MyListObject myList = new MyListObject(getActivity(), R.layout.listrow_details);
+//                listView.setAdapter(myList);
+//                myList.setListView(listView);
 
                 //((TextView) rootView.findViewById(android.R.id.text1)).setText("MyList");
                 return rootView;

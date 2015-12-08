@@ -14,4 +14,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/friendsListView" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/next"
+        android:text="Finish"/>
+
 </LinearLayout>
