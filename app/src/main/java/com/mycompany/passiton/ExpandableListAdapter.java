@@ -3,24 +3,34 @@ package com.mycompany.passiton;
 /**
  * http://www.vogella.com/tutorials/AndroidListView/article.html
  */
+
 import android.app.Activity;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
-    private final SparseArray<Group> groups;
+    private final ArrayList<Group> groups;
     public LayoutInflater inflater;
     public Activity activity;
+    public final static String TAG = "mylist";
 
-    public ExpandableListAdapter(Activity act, SparseArray<Group> groups) {
+    private View listView;
+
+
+    public ExpandableListAdapter(Activity act, ArrayList<Group> groups) {
         activity = act;
         this.groups = groups;
         inflater = act.getLayoutInflater();
@@ -36,29 +46,115 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return 0;
     }
 
-    @Override
-    public View getChildView(int groupPosition, final int childPosition,
-                             boolean isLastChild, View convertView, ViewGroup parent) {
-        final String children = (String) getChild(groupPosition, childPosition);
-        TextView text = null;
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listrow_details, null);
 
-            MyListObject myList = new MyListObject(activity, R.layout.listrow_details);
-            //listView.setAdapter(myList);
-            myList.setListView(convertView);
+
+   @Override
+    public View getChildView(final int groupPosition, final int childPosition,
+                             boolean isLastChild, View convertView, ViewGroup parent) {
+        final Group.Item child = (Group.Item) getChild(groupPosition, childPosition);
+        TextView text = null;
+
+        View workingView = null;
+
+        if (convertView == null) {
+            workingView = inflater.inflate(R.layout.listrow_details, null);
+            //convertView = inflater.inflate(R.layout.listrow_details, null);
+
+//            MyListObject myList = new MyListObject(activity, R.layout.listrow_details);
+//            //listView.setAdapter(myList);
+//            myList.setListView(convertView);
 
         }
-        text = (TextView) convertView.findViewById(R.id.textView1);
-        text.setText(children);
-        convertView.setOnClickListener(new OnClickListener() {
+
+        else workingView = convertView;
+
+//
+//        text = (TextView) convertView.findViewById(R.id.textView1);
+//        text.setText(children);
+//        convertView.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(activity, children,
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+
+        final ObjectHolder holder = getObjectHolder(workingView);
+
+        // set values here //
+
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) holder.mainView.getLayoutParams();
+        params.rightMargin = 0;
+        params.leftMargin = 0;
+        holder.mainView.setLayoutParams(params);
+
+        holder.mainView.setVisibility(View.VISIBLE);//reset view
+        ImageView itemImage = (ImageView) holder.mainView.findViewById(R.id.itemImage);
+        Picasso.with(activity).load("http://apt-passiton.appspot.com/image?key="+child.getKey()).into(itemImage);
+
+        TextView itemText = (TextView) holder.mainView.findViewById(R.id.itemText);
+        itemText.setText(child.toString());
+
+        final SwipeDetector swipeDetector = new SwipeDetector(holder, groupPosition, childPosition);
+        workingView.setOnTouchListener(swipeDetector);
+        ImageView close = (ImageView) holder.deleteView.findViewById(R.id.close);
+        close.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(activity, children,
-                        Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                if (holder.mainView.getVisibility() == View.GONE)
+                    holder.mainView.setVisibility(View.VISIBLE);
             }
         });
-        return convertView;
+
+       ImageView delete = (ImageView) holder.deleteView.findViewById(R.id.delete);
+       delete.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               if(holder.mainView.getVisibility() == View.GONE) {
+                   swipeDetector.swipeRemove();
+               }
+
+           }
+       });
+
+
+        return workingView;
+        //return convertView;
+    }
+
+
+    private ObjectHolder getObjectHolder(View workingView) {
+        Object tag = workingView.getTag();
+        ObjectHolder holder = null;
+
+        if (tag == null || !(tag instanceof ObjectHolder)) {
+            holder = new ObjectHolder();
+            holder.mainView = (LinearLayout)workingView.findViewById(R.id.mainview);
+            holder.deleteView = (RelativeLayout)workingView.findViewById(R.id.deleteview);
+
+            /* initialize other views here */
+
+            workingView.setTag(holder);
+        } else {
+            holder = (ObjectHolder) tag;
+        }
+
+        return holder;
+    }
+
+
+    public static class ObjectHolder {
+        public LinearLayout mainView;
+        public RelativeLayout deleteView;
+        //public TextView itemText = (TextView) mainView.findViewById(R.id.itemText);;
+
+        /* other views here */
+    }
+
+
+    public void setListView(View view) {
+        listView = view;
     }
 
     @Override
@@ -67,7 +163,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public Object getGroup(int groupPosition) {
+    public Group getGroup(int groupPosition) {
         return groups.get(groupPosition);
     }
 
@@ -111,5 +207,54 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
+    }
+
+
+
+    public class SwipeDetector implements View.OnTouchListener {
+
+        private ExpandableListAdapter.ObjectHolder holder;
+        private int groupPosition, childPosition;
+
+        public SwipeDetector(ExpandableListAdapter.ObjectHolder h, int gpos, int cpos) {
+            holder = h;
+            groupPosition =gpos;
+            childPosition = cpos;
+        }
+
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+
+                    return true; // allow other events like Click to be processed
+                }
+
+                case MotionEvent.ACTION_MOVE: {
+                        holder.mainView.setVisibility(View.GONE);
+
+                      return true;
+                }
+
+                case MotionEvent.ACTION_UP:
+                    //holder.deleteView.setVisibility(View.VISIBLE);
+                    return true;
+
+                case MotionEvent.ACTION_CANCEL:
+                    //holder.mainView.setVisibility(View.VISIBLE);
+                    return false;
+            }
+
+            return true;
+        }
+
+
+        public void swipeRemove() {
+            getGroup(groupPosition).remove(childPosition, activity);
+           // remove(getChild(groupPosition, childPosition));
+            notifyDataSetChanged();
+        }
+
     }
 }

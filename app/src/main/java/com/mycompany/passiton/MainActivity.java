@@ -14,12 +14,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -220,42 +216,6 @@ public class MainActivity extends BaseActivity
 //    }
 
 
-        /**
-         * A dummy fragment representing a section of the app, but that simply displays dummy text.
-         */
-        public static class MyListSectionFragment extends Fragment {
-
-            SparseArray<Group> groups = new SparseArray<Group>();
-
-            @Override
-            public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                     Bundle savedInstanceState) {
-                View rootView = inflater.inflate(R.layout.fragment_section_mylist, container, false);
-                createData();
-                ExpandableListView listView = (ExpandableListView) rootView.findViewById(R.id.listView);
-                //ListView listView = (ListView) rootView.findViewById(R.id.listView);
-                ExpandableListAdapter adapter = new ExpandableListAdapter(getActivity(), groups);
-                listView.setAdapter(adapter);
-
-//
-//                MyListObject myList = new MyListObject(getActivity(), R.layout.listrow_details);
-//                listView.setAdapter(myList);
-//                myList.setListView(listView);
-
-                //((TextView) rootView.findViewById(android.R.id.text1)).setText("MyList");
-                return rootView;
-            }
-
-            public void createData() {
-                for (int j = 0; j < 5; j++) {
-                    Group group = new Group("Test " + j);
-                    for (int i = 0; i < 5; i++) {
-                        group.children.add("Sub Item" + i);
-                    }
-                    groups.append(j, group);
-                }
-            }
-        }
 
         @Override
         public void onBackPressed() {
