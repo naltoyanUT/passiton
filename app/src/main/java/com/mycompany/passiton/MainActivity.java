@@ -2,6 +2,8 @@ package com.mycompany.passiton;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -14,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -21,6 +24,9 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     String email = null;
+    public static Location location = null;
+    private static final String TAG = "passiton";
+
 
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -94,6 +100,35 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
+
+        LocationManager manager=(LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        android.location.LocationListener listener=new android.location.LocationListener(){
+
+            @Override
+            public void onLocationChanged(Location location) {
+                // TODO Auto-generated method stub
+                MainActivity.location = location;
+                Log.e(TAG, "location updated");
+                //latitdue=location.getLatitude();
+                //longitude=location.getLongitude();
+            }
+            @Override
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras) {
+
+            }
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+
+        };
+
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, (float) 500, listener);
 
 //        TextView viewById = (TextView) findViewById(R.id.emailView);
 //        viewById.append("TEST");

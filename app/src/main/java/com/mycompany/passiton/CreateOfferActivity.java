@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -35,7 +40,8 @@ import java.util.Date;
 /**
  * Created by ntoyan on 12/5/2015.
  */
-public class CreateOfferActivity extends BaseActivity implements AdapterView.OnItemSelectedListener{
+public class CreateOfferActivity extends BaseActivity implements
+        AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
     public static final int UPLOAD = 2;
     private static final int PICK_IMAGE = 1;
@@ -51,6 +57,8 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
     String category = "All";
     EditText nameView, descriptionView;
     File uploadfile;
+    Double latitude, longitude;
+    boolean tagWithLocation = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +68,36 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
+        LocationManager manager=(LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        LocationListener listener=new LocationListener(){
+
+            @Override
+            public void onLocationChanged(Location location) {
+                // TODO Auto-generated method stub
+                latitude=location.getLatitude();
+                longitude=location.getLongitude();
+            }
+            @Override
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras) {
+
+            }
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+
+        };
+
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, (float) 0., listener);
+
 
 
         nameView = (EditText) findViewById(R.id.name);
@@ -125,6 +163,9 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
 
         });
 
+        SwitchCompat locationSwitch = (SwitchCompat) findViewById(R.id.location);
+        locationSwitch.setOnCheckedChangeListener(this);
+
         uploadButton = (Button) findViewById(R.id.upload_to_server);
         uploadButton.setEnabled(false);
         uploadButton.setOnClickListener(
@@ -132,13 +173,24 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
                     @Override
                     public void onClick(View v) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        byte[] encodedImage;
+                        if(bitmapImage == null)
+                            bitmapImage = BitmapFactory.decodeResource(getResources(), R.drawable.no_photo);
+
                         bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-                        byte[] encodedImage = baos.toByteArray();
+                        encodedImage = baos.toByteArray();
+
                         Intent intent = new Intent(context, SelectFriendsActivity.class);
                         intent.putExtra("name", nameView.getText().toString());
                         intent.putExtra("category", "all");
                         intent.putExtra("encodedImage", encodedImage);
-                        intent.putExtra("description", descriptionView.getText().toString());
+                        String desc = descriptionView.getText().toString();
+                        if(desc.equals("")) desc = "no description provided";
+                        intent.putExtra("description", desc);
+                        if(tagWithLocation) {
+                            intent.putExtra("latitude", latitude + "");
+                            intent.putExtra("longitude", longitude + "");
+                        }
                         startActivityForResult(intent, UPLOAD);
                     }
                 });
@@ -154,6 +206,15 @@ public class CreateOfferActivity extends BaseActivity implements AdapterView.OnI
         spinner.setOnItemSelectedListener(this);
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.location:
+                tagWithLocation = isChecked;
+                break;
+        }
+
+    }
 
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {

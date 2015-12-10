@@ -70,8 +70,8 @@ public class SelectFriendsActivity extends BaseActivity {
         params.put("category", getIntent().getExtras().getString("category"));
         params.put("file", new ByteArrayInputStream(getIntent().getExtras().getByteArray("encodedImage")));
         params.put("description", getIntent().getExtras().getString("description"));
-        params.put("latitude", 0);
-        params.put("longitude", 0);
+        params.put("latitude", getIntent().getExtras().getString("latitude"));
+        params.put("longitude", getIntent().getExtras().getString("longitude"));
         params.put("friends", friends);
         //  Log.i(TAG, "lat and long ----------- " + latitude + ", " + longitude);
         AsyncHttpClient client = new AsyncHttpClient();

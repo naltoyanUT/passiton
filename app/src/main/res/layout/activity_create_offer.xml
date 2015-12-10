@@ -96,7 +96,7 @@
                 android:text="Tag with current location?"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/com_facebook_likeview_text_color"
-                android:id="@+id/switch1"
+                android:id="@+id/location"
                 android:layout_marginTop="20dp"/>
 
             <View style="@style/Divider"/>

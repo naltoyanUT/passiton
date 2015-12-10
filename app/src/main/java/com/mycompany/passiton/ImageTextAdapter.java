@@ -67,7 +67,8 @@ public class ImageTextAdapter extends BaseAdapter {
         TextView textView = (TextView)grid.findViewById(com.mycompany.passiton.R.id.text);
         textView.setText(imageText.get(position));
 
-        Picasso.with(mContext).load(imageURLs.get(position)).fit().centerCrop().into(imageView);
+        Picasso.with(mContext).load("http://apt-passiton.appspot.com/image?key=" + imageURLs.get(position)).fit().centerCrop().into(imageView);
+
 
         return grid;
     }
