@@ -38,16 +38,21 @@ public class BaseActivity extends AppCompatActivity {
         // Handle action buttons
         switch (item.getItemId()) {
             case R.id.action_logout:
-                Toast.makeText(this, "You are being logged out...", Toast.LENGTH_SHORT).show();
-                SigninActivity.logOut();
-                Intent intent = new Intent(this, SigninActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK); //clear all previous activities
-                startActivity(intent);
-                finish();
+                logout();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    protected void logout()
+    {
+        Toast.makeText(this, "You are being logged out...", Toast.LENGTH_SHORT).show();
+        SigninActivity.logOut();
+        Intent intent = new Intent(this, SigninActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK); //clear all previous activities
+        startActivity(intent);
+        finish();
     }
 
 

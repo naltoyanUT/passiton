@@ -13,6 +13,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -71,7 +72,6 @@ public class MainActivity extends BaseActivity
         // of the app.
         mAppSectionsPagerAdapter = new AppSectionsPagerAdapter(getSupportFragmentManager());
 
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         for (int i = 0; i < mAppSectionsPagerAdapter.getCount(); i++) {
             tabLayout.addTab(tabLayout.newTab().setText(mAppSectionsPagerAdapter.getPageTitle(i)));
@@ -89,6 +89,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
+                mAppSectionsPagerAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -143,11 +144,22 @@ public class MainActivity extends BaseActivity
 
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if(mAppSectionsPagerAdapter != null) {
+            mAppSectionsPagerAdapter.notifyDataSetChanged();
+            mViewPager.destroyDrawingCache();
+        }
+
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the primary
      * sections of the app.
      */
-    public static class AppSectionsPagerAdapter extends FragmentPagerAdapter {
+    public static class AppSectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public AppSectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -169,6 +181,20 @@ public class MainActivity extends BaseActivity
 //                    fragment.setArguments(args);
 //                    return fragment;
             }
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            if (object instanceof OffersSectionFragment) {
+                ((OffersSectionFragment) object).getOffers();
+                //notifyDataSetChanged();
+            }
+//            else if(object instanceof MyListSectionFragment){
+//                ((MyListSectionFragment)object).popluateGroups();
+//
+//            }
+            //don't return POSITION_NONE, avoid fragment recreation.
+            return super.getItemPosition(object);
         }
 
         @Override
@@ -321,7 +347,7 @@ public class MainActivity extends BaseActivity
 
             } else if (id == R.id.nav_logout) {
 
-                SigninActivity.logOut();
+                logout();
             }
 
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

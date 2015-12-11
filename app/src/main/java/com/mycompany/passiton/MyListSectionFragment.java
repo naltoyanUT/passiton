@@ -57,8 +57,13 @@ public class MyListSectionFragment extends Fragment {
         popluateGroups();
     }
 
-    private void popluateGroups()
+    public void popluateGroups()
     {
+        //reset previous data
+//        offeredGroup.children = new ArrayList<Group.Item>();
+//        wantedGroup.children = new ArrayList<Group.Item>();
+//        reservedGroup.children = new ArrayList<Group.Item>();
+
         final String request_url = "http://apt-passiton.appspot.com/mylist";
         RequestParams params = new RequestParams();
         params.put("user_id", "Alice A");//AccessToken.getCurrentAccessToken().getUserId());

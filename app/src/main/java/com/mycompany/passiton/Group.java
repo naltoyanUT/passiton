@@ -26,7 +26,7 @@ public class Group {
 
     public String string;
     private int type;
-    public final List<Item> children = new ArrayList<Item>();
+    public List<Item> children = new ArrayList<Item>();
 
     public Group(String string, int type) {
         this.string = string;

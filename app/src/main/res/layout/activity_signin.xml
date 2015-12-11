@@ -8,7 +8,7 @@
         android:layout_width="249dp"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/hands"
         android:layout_weight="0.43"
         android:layout_gravity="center_horizontal" />
 

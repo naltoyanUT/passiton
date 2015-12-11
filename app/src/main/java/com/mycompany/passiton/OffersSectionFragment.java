@@ -27,7 +27,8 @@ import java.util.ArrayList;
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class OffersSectionFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class OffersSectionFragment extends Fragment implements
+        AdapterView.OnItemSelectedListener {
 
     Context context;
     GridView gridview;
@@ -53,6 +54,7 @@ public class OffersSectionFragment extends Fragment implements AdapterView.OnIte
 
         gridview = (GridView) rootView.findViewById(com.mycompany.passiton.R.id.gridView);
 
+
         return rootView;
     }
 
@@ -72,11 +74,19 @@ public class OffersSectionFragment extends Fragment implements AdapterView.OnIte
 //        gridview.setAdapter(new ImageTextAdapter(context, imageURLs, imageCaps));
     }
 
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
+    public void onResume()
+    {
+        super.onResume();
     }
 
-    private void getOffers()
+
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+
+    }
+
+    public void getOffers()
     {
         final String request_url = "http://apt-passiton.appspot.com/offers";
         RequestParams params = new RequestParams();
