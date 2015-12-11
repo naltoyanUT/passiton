@@ -5,6 +5,7 @@ package com.mycompany.passiton;
  */
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +20,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -91,7 +94,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         holder.mainView.setVisibility(View.VISIBLE);//reset view
         ImageView itemImage = (ImageView) holder.mainView.findViewById(R.id.itemImage);
-        Picasso.with(activity).load("http://apt-passiton.appspot.com/image?key="+child.getKey()).into(itemImage);
+        Picasso.with(activity)
+                .load("http://apt-passiton.appspot.com/image?key=" + child.getKey())
+                .transform(new CropCircleTransformation())
+                //.fit().centerInside()
+                .into(itemImage);
 
         TextView itemText = (TextView) holder.mainView.findViewById(R.id.itemText);
         itemText.setText(child.toString());
@@ -106,6 +113,25 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     holder.mainView.setVisibility(View.VISIBLE);
             }
         });
+
+       ImageView details = (ImageView) holder.deleteView.findViewById(R.id.details);
+       details.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               if(holder.mainView.getVisibility() == View.GONE) {
+                   Intent detailIntent = new Intent(activity, ItemDetailActivity.class);
+                   //detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, position);
+                   detailIntent.putExtra("name", child.toString());
+                   detailIntent.putExtra("key", child.getKey());
+//                            detailIntent.putExtra("lat", itemLats.get(position));
+//                            detailIntent.putExtra("lon", itemLons.get(position));
+                   //Log.i("bla", "The initial url is = " + itemKeys.get(position));
+                   activity.startActivity(detailIntent);
+                   holder.mainView.setVisibility(View.VISIBLE);
+               }
+
+           }
+       });
 
        ImageView delete = (ImageView) holder.deleteView.findViewById(R.id.delete);
        delete.setOnClickListener(new View.OnClickListener() {

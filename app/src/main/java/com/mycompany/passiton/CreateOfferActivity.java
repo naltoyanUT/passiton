@@ -1,10 +1,13 @@
 package com.mycompany.passiton;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,6 +21,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,6 +29,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
@@ -54,7 +59,7 @@ public class CreateOfferActivity extends BaseActivity implements
     Bitmap bitmapImage;
     ImageView imgView;
     //TextView txtView;
-    String category = "All";
+    String category = "";
     EditText nameView, descriptionView;
     File uploadfile;
     Double latitude, longitude;
@@ -96,7 +101,10 @@ public class CreateOfferActivity extends BaseActivity implements
 
         };
 
-        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, (float) 0., listener);
+       // checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        int result = context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+        if(result == PackageManager.PERMISSION_GRANTED)
+            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, (float) 0., listener);
 
 
 
@@ -112,7 +120,7 @@ public class CreateOfferActivity extends BaseActivity implements
 
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if(nameView.getText().length() > 0)
+                if(nameView.getText().length() > 0 && !category.equals(""))
                     uploadButton.setEnabled(true);
                 else
                     uploadButton.setEnabled(false);
@@ -174,7 +182,7 @@ public class CreateOfferActivity extends BaseActivity implements
                     public void onClick(View v) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         byte[] encodedImage;
-                        if(bitmapImage == null)
+                        if (bitmapImage == null)
                             bitmapImage = BitmapFactory.decodeResource(getResources(), R.drawable.no_photo);
 
                         bitmapImage.compress(Bitmap.CompressFormat.JPEG, 50, baos);
@@ -185,9 +193,9 @@ public class CreateOfferActivity extends BaseActivity implements
                         intent.putExtra("category", "all");
                         intent.putExtra("encodedImage", encodedImage);
                         String desc = descriptionView.getText().toString();
-                        if(desc.equals("")) desc = "no description provided";
+                        if (desc.equals("")) desc = "no description provided";
                         intent.putExtra("description", desc);
-                        if(tagWithLocation) {
+                        if (tagWithLocation) {
                             intent.putExtra("latitude", latitude + "");
                             intent.putExtra("longitude", longitude + "");
                         }
@@ -195,15 +203,53 @@ public class CreateOfferActivity extends BaseActivity implements
                     }
                 });
 
+
+        String[] categories = getResources().getStringArray(R.array.create_categories_array);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_dropdown_item, categories) {
+
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            public boolean areAllItemsEnabled() {
+                return false;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position==0) {
+                    // Set the disable item text color
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        //
         Spinner spinner = (Spinner) findViewById(R.id.categories_spinner);
+
+
+
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
-                R.array.categories_array, android.R.layout.simple_spinner_item);
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
+//                R.array.create_categories_array, android.R.layout.simple_spinner_item);
+
         // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
+        //spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+        //spinner.getChildAt(0).setEnabled(false);
+        spinner.setAdapter(spinnerAdapter);
+
     }
 
     @Override
@@ -216,10 +262,20 @@ public class CreateOfferActivity extends BaseActivity implements
 
     }
 
+
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
         // An item was selected. You can retrieve the selected item using
-        category = (String) parent.getItemAtPosition(pos);
+        if(pos == 0) {
+            category = "";
+            uploadButton.setEnabled(false);
+        }
+        else
+        {
+            category = (String) parent.getItemAtPosition(pos);
+            if(nameView.getText().length() > 0)
+                uploadButton.setEnabled(true);
+        }
         Log.i(TAG, "selected cat is = " + category);
     }
 

@@ -113,7 +113,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                     arguments.putString("name", name);
                     arguments.putString("key", key);
 
-                    arguments.putString("owner", owner);
+                    arguments.putString("owner", SigninActivity.getFriendName(owner));
                     arguments.putString("date", date);
                     arguments.putString("description", description);
 

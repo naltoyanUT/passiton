@@ -37,7 +37,8 @@ public class SigninActivity extends Activity {
     Context context = this; //addeded by me
     Activity activity = this;
     private ProgressDialog progressDialog;
-    String email = "not set yet";
+    static String email = "not set yet";
+    static String name = "not set yet";
     //public static ArrayList<String> friends = new ArrayList<String>();
     public static ArrayList<Friend> friends = new ArrayList<Friend>();
 
@@ -93,17 +94,17 @@ public class SigninActivity extends Activity {
                             GraphResponse response) {
                         // Application code
                         Log.v(TAG, response.toString());
-
+                        friends = new ArrayList<Friend>(); //reset
                         for (int i = 0, size = object.length(); i < size; i++) {
                             JSONObject friend = null;
                             try {
                                 friend = object.getJSONObject(i);
                                 String id = friend.getString("id");
                                 String name = friend.getString("name");
-                                //friends.add(name);
+
                                 friends.add(new Friend(id, name));
-                                friends.add(new Friend("12345678", "Alice A"));
-                                friends.add(new Friend("98765432", "Bob B"));
+//                                friends.add(new Friend("12345678", "Alice A"));
+//                                friends.add(new Friend("98765432", "Bob B"));
 
 
                                 Log.i(TAG, "FRIENDS name/id=" + name + "/" + id);
@@ -141,8 +142,9 @@ public class SigninActivity extends Activity {
                         public void onCompleted(GraphResponse response) {
                             JSONObject json = response.getJSONObject();
                             try {
+                                name = json.getString("name");
                                 email = json.getString("email");
-                                Log.i(TAG, "name/email=" + json.getString("name") + "/" + email);
+                                Log.i(TAG, "name/email=" + name + "/" + email);
                             } catch (JSONException e) {
                                 Log.d(TAG, e.toString());
                             }
@@ -187,6 +189,23 @@ public class SigninActivity extends Activity {
         LoginManager.getInstance().logOut();
         Log.i(TAG, "4----" + AccessToken.getCurrentAccessToken() + "");
         AccessToken.setCurrentAccessToken(null);
+    }
+
+    public static String [] getFriendsNames()
+    {
+        String [] names =  new String [friends.size()];
+        for(int i = 0; i< friends.size(); ++i)
+            names[i] = friends.get(i).getName();
+        return names;
+    }
+
+    public static String getFriendName(String id)
+    {
+        for(Friend friend: friends){
+            if(friend.getId().equals(id))
+                return friend.getName();
+        }
+        return id;
     }
 
 }

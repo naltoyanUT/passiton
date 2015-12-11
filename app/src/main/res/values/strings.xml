@@ -22,4 +22,17 @@
         <item>Bed and Bath</item>
         <item>Other</item>
     </string-array>
+
+    <string-array name="create_categories_array">
+        <item>Select a category</item>
+        <item>Food</item>
+        <item>Toys</item>
+        <item>Electronics</item>
+        <item>Cleaning products</item>
+        <item>Kitchen</item>
+        <item>Office</item>
+        <item>Bed and Bath</item>
+        <item>Other</item>
+    </string-array>
+
 </resources>

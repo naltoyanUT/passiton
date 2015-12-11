@@ -1,7 +1,9 @@
 package com.mycompany.passiton;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -15,10 +17,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -128,7 +134,9 @@ public class MainActivity extends BaseActivity
 
         };
 
-        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, (float) 500, listener);
+        int result = context.checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+        if(result == PackageManager.PERMISSION_GRANTED)
+            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, (float) 500, listener);
 
 //        TextView viewById = (TextView) findViewById(R.id.emailView);
 //        viewById.append("TEST");
@@ -290,18 +298,30 @@ public class MainActivity extends BaseActivity
             // Handle navigation view item clicks here.
             int id = item.getItemId();
 
-            if (id == R.id.nav_camara) {
-                // Handle the camera action
-            } else if (id == R.id.nav_gallery) {
+            if (id == R.id.nav_profile) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle("Your Profile");
+                alertDialogBuilder.setMessage("\t" + SigninActivity.name + "\n\n\t" + SigninActivity.email);
+                alertDialogBuilder.setIcon(R.drawable.com_facebook_profile_picture_blank_portrait);
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
 
-            } else if (id == R.id.nav_slideshow) {
+            } else if (id == R.id.nav_friends) {
 
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
+                String names[] = SigninActivity.getFriendsNames();
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflater = getLayoutInflater();
+                View convertView = (View) inflater.inflate(R.layout.dialog_friends, null);
+                alertDialog.setView(convertView);
+                alertDialog.setTitle("Your Friends");
+                ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);
+                lv.setAdapter(adapter);
+                alertDialog.show();
+
+            } else if (id == R.id.nav_logout) {
+
+                SigninActivity.logOut();
             }
 
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -9,9 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:padding="8dp"
-        android:background="#ff3b42"
         android:id="@+id/deleteview"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_alignParentEnd="true">
 
         <ImageView
             android:id="@+id/close"
@@ -19,12 +19,26 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/com_facebook_tooltip_black_xout"
-            android:padding="0dp"
+            android:src="@drawable/ic_clear_white_24dp"
             android:contentDescription="close"
             android:paddingEnd="20dp"
-            android:paddingStart="20dp" />
+            android:paddingStart="20dp"
+            android:background="#4b050505"/>
 
+
+        <ImageView
+            android:id="@+id/details"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_open_in_new_white_24dp"
+            android:clickable="true"
+            android:layout_alignParentStart="false"
+            android:layout_toStartOf="@id/close"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:background="@color/com_facebook_button_like_background_color_selected"
+            />
 
         <ImageView
             android:id="@+id/delete"
@@ -34,15 +48,16 @@
             android:src="@drawable/ic_delete_white_24dp"
             android:clickable="true"
             android:layout_alignParentStart="false"
-            android:layout_toStartOf="@id/close"
+            android:layout_toStartOf="@id/details"
             android:paddingEnd="20dp"
-            android:paddingStart="20dp" />
+            android:paddingStart="20dp"
+            android:background="#ff3b42"/>
+
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:padding="8dp"
         android:weightSum="1"
         android:background="#ffebeff1"
         android:id="@+id/mainview"
@@ -50,15 +65,18 @@
 
         <ImageView
             android:id="@+id/itemImage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="left" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical|left"
+            android:layout_margin="5dp" />
 
         <TextView
             android:id="@+id/itemText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-           />
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical" />
 
         <!-- add views here that you want to show at the top !-->
 
