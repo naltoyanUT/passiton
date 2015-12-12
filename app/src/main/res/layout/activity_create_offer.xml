@@ -3,30 +3,22 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:gravity="center_horizontal"
+    android:fitsSystemWindows="true"
     android:theme="@style/AppTheme.AppBarOverlay"
     android:orientation="vertical"
-    tools:context=".CreateOfferActivity"
+    tools:context=".MainActivity"
     android:focusableInTouchMode="true">
 
 
-    <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
+        <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
     android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
     android:background="?attr/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay" />
+
 
 <!-- Login progress -->
     <!--<ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"-->
         <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
         <!--android:layout_marginBottom="8dp" android:visibility="gone" />-->
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="What would you like to pass on today?"
-        android:id="@+id/initMsg"
-        android:layout_weight=".2"
-        android:textColor="@color/colorAccent"
-        android:padding="10dp" />
 
     <ScrollView android:id="@+id/new_form" android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -184,7 +176,7 @@
                 android:scaleType="centerInside"
                 android:cropToPadding="false"
                 android:maxHeight="150dp"
-                android:maxWidth="150dp" />
+                android:minWidth="150dp" />
 
 
         </LinearLayout>

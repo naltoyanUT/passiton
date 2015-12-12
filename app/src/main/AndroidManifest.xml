@@ -39,14 +39,14 @@
 
         <activity
             android:name=".CreateOfferActivity"
-            android:label="@string/activity_main"
+            android:label="New Offer"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".MainActivity">
         </activity>
 
         <activity
             android:name=".SelectFriendsActivity"
-            android:label="@string/activity_main"
+            android:label="Select Friends"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".CreateOfferActivity">
         </activity>

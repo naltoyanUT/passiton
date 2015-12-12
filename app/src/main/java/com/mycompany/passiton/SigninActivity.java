@@ -203,6 +203,8 @@ public class SigninActivity extends Activity {
 
     public static String getFriendName(String id)
     {
+        if(id.equals(AccessToken.getCurrentAccessToken().getUserId()))
+            return name;
         for(Friend friend: friends){
             if(friend.getId().equals(id))
                 return friend.getName();

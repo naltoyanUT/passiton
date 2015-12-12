@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -75,7 +76,7 @@ public class ItemDetailFragment extends Fragment {
 
                 final String request_url = "http://apt-passiton.appspot.com/want";
                 RequestParams params = new RequestParams();
-                params.put("user_id", "Alice A");//AccessToken.getCurrentAccessToken().getUserId());
+                params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
                 params.put("key", key);
                 final AsyncHttpClient httpClient = new AsyncHttpClient();
                 httpClient.setUserAgent("android");

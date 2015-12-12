@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Spinner;
 
+import com.facebook.AccessToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -90,7 +91,7 @@ public class OffersSectionFragment extends Fragment implements
     {
         final String request_url = "http://apt-passiton.appspot.com/offers";
         RequestParams params = new RequestParams();
-        params.put("user_id", "Alice A");//AccessToken.getCurrentAccessToken().getUserId());
+        params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
         params.put("category", category.toLowerCase());
         final AsyncHttpClient httpClient = new AsyncHttpClient();
         httpClient.setUserAgent("android");

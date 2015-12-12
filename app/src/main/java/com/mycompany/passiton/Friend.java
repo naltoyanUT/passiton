@@ -40,4 +40,5 @@ public class Friend {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
+
 }

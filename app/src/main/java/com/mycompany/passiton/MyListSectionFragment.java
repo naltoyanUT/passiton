@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
+import com.facebook.AccessToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -84,7 +85,7 @@ public class MyListSectionFragment extends Fragment {
 
         final String request_url = "http://apt-passiton.appspot.com/mylist";
         RequestParams params = new RequestParams();
-        params.put("user_id", "Alice A");//AccessToken.getCurrentAccessToken().getUserId());
+        params.put("user_id", AccessToken.getCurrentAccessToken().getUserId());
         final AsyncHttpClient httpClient = new AsyncHttpClient();
         httpClient.setUserAgent("android");
         httpClient.get(request_url, params, new AsyncHttpResponseHandler() {

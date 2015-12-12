@@ -2,6 +2,7 @@ package com.mycompany.passiton;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,6 +40,8 @@ public class SelectFriendsActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (Build.VERSION.SDK_INT >= 21)
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
         ListView lv = (ListView) findViewById(R.id.friendsListView);
 
@@ -51,7 +54,7 @@ public class SelectFriendsActivity extends BaseActivity {
             public void onClick(View view) {
                 for (Friend friend : SigninActivity.friends) {
                     if (friend.isSelected())
-                        friends += friend.getName() + SEPARATOR;
+                        friends += friend.getId() + SEPARATOR;
                 }
                 if (friends.length() > 0)
                     friends = friends.substring(0, friends.length() - 1);
@@ -81,6 +84,8 @@ public class SelectFriendsActivity extends BaseActivity {
             public void onSuccess(int statusCode, Header[] headers, byte[] response) {
                 Log.w("async", "success!!!!");
                 Toast.makeText(context, "Upload Successful", Toast.LENGTH_SHORT).show();
+                for (Friend friend : SigninActivity.friends)
+                    friend.setSelected(false);
                 Intent intent=new Intent();
                 intent.putExtra("success", true);
                 setResult(CreateOfferActivity.UPLOAD, intent);

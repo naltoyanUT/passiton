@@ -3,10 +3,12 @@ package com.mycompany.passiton;
 /**
  * http://www.vogella.com/tutorials/AndroidListView/article.html
  */
+
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -59,7 +61,7 @@ public class Group {
     {
        // final String request_url = "http://apt-passiton.appspot.com/delete";
         RequestParams params = new RequestParams();
-        params.put("user_id",  "Alice A");//AccessToken.getCurrentAccessToken().getUserId());
+        params.put("user_id",  AccessToken.getCurrentAccessToken().getUserId());
         params.put("key", children.get(childPosition).getKey());
         final AsyncHttpClient httpClient = new AsyncHttpClient();
         httpClient.setUserAgent("android");

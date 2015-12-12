@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -73,6 +74,8 @@ public class CreateOfferActivity extends BaseActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (Build.VERSION.SDK_INT >= 21)
+            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
 
 
@@ -190,7 +193,7 @@ public class CreateOfferActivity extends BaseActivity implements
 
                         Intent intent = new Intent(context, SelectFriendsActivity.class);
                         intent.putExtra("name", nameView.getText().toString());
-                        intent.putExtra("category", "all");
+                        intent.putExtra("category", category);
                         intent.putExtra("encodedImage", encodedImage);
                         String desc = descriptionView.getText().toString();
                         if (desc.equals("")) desc = "no description provided";
