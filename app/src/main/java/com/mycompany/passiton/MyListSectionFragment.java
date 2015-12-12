@@ -27,19 +27,31 @@ public class MyListSectionFragment extends Fragment {
     private static String TAG = "mylist" ;
     ArrayList<Group> groups = new ArrayList<Group>();
     Group offeredGroup, wantedGroup, reservedGroup;
+    ExpandableListAdapter adapter;
+    ExpandableListView listView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_section_mylist, container, false);
         createData();
-        ExpandableListView listView = (ExpandableListView) rootView.findViewById(R.id.listView);
+        listView = (ExpandableListView) rootView.findViewById(R.id.listView);
         //ListView listView = (ListView) rootView.findViewById(R.id.listView);
-        ExpandableListAdapter adapter = new ExpandableListAdapter(getActivity(), groups);
+        adapter = new ExpandableListAdapter(getActivity(), groups);
         listView.setAdapter(adapter);
         adapter.setListView(listView);
 
         return rootView;
+    }
+
+    public void onResume()
+    {
+        super.onResume();
+        clearChildren();
+        popluateGroups();
+        listView.collapseGroup(Group.OFFERED_GROUP);
+        listView.collapseGroup(Group.WANTED_GROUP);
+        listView.collapseGroup(Group.RESERVED_GROUP);
     }
 
     public void createData() {
@@ -54,7 +66,13 @@ public class MyListSectionFragment extends Fragment {
         reservedGroup = new Group("Reserved", Group.RESERVED_GROUP);
         groups.add(reservedGroup);
 
-        popluateGroups();
+    }
+
+    private void clearChildren()
+    {
+        offeredGroup.children = new ArrayList<Group.Item>();
+        wantedGroup.children = new ArrayList<Group.Item>();
+        reservedGroup.children = new ArrayList<Group.Item>();
     }
 
     public void popluateGroups()

@@ -25,7 +25,7 @@ import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
-    private final ArrayList<Group> groups;
+    private ArrayList<Group> groups;
     public LayoutInflater inflater;
     public Activity activity;
     public final static String TAG = "mylist";
@@ -183,6 +183,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         listView = view;
     }
 
+    public void setGroups(ArrayList<Group> groups) {this.groups = groups;}
+
     @Override
     public int getChildrenCount(int groupPosition) {
         return groups.get(groupPosition).children.size();
@@ -278,8 +280,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         public void swipeRemove() {
             getGroup(groupPosition).remove(childPosition, activity);
+           // groups = MyListSectionFragment.
            // remove(getChild(groupPosition, childPosition));
             notifyDataSetChanged();
+            listView.destroyDrawingCache();
         }
 
     }
