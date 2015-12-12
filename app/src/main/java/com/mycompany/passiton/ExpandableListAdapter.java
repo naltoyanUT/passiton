@@ -103,8 +103,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView itemText = (TextView) holder.mainView.findViewById(R.id.itemText);
         itemText.setText(child.toString());
 
-        final SwipeDetector swipeDetector = new SwipeDetector(holder, groupPosition, childPosition);
-        workingView.setOnTouchListener(swipeDetector);
+        final SwipeDetector swipeDetector = new SwipeDetector(holder.mainView, groupPosition, childPosition);
+        holder.mainView.setOnTouchListener(swipeDetector);
+       // workingView.setOnTouchListener(swipeDetector);
         ImageView close = (ImageView) holder.deleteView.findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +124,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                    //detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, position);
                    detailIntent.putExtra("name", child.toString());
                    detailIntent.putExtra("key", child.getKey());
+                   detailIntent.putExtra("disable", true);
 //                            detailIntent.putExtra("lat", itemLats.get(position));
 //                            detailIntent.putExtra("lon", itemLons.get(position));
                    //Log.i("bla", "The initial url is = " + itemKeys.get(position));
@@ -241,10 +243,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     public class SwipeDetector implements View.OnTouchListener {
 
-        private ExpandableListAdapter.ObjectHolder holder;
+        //private ExpandableListAdapter.ObjectHolder holder;
+        private LinearLayout holder;
         private int groupPosition, childPosition;
 
-        public SwipeDetector(ExpandableListAdapter.ObjectHolder h, int gpos, int cpos) {
+        public SwipeDetector(LinearLayout h, int gpos, int cpos) { //ExpandableListAdapter.ObjectHolder h
             holder = h;
             groupPosition =gpos;
             childPosition = cpos;
@@ -260,7 +263,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 }
 
                 case MotionEvent.ACTION_MOVE: {
-                        holder.mainView.setVisibility(View.GONE);
+                        //holder.mainView.setVisibility(View.GONE);
+                    holder.setVisibility(View.GONE);
 
                       return true;
                 }

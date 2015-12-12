@@ -65,7 +65,8 @@ public class ItemDetailFragment extends Fragment {
         ((TextView) rootView.findViewById(R.id.item_detail_owner)).setText(getArguments().getString("owner"));
         ((TextView) rootView.findViewById(R.id.item_detail_date)).setText(getArguments().getString("date"));
         ((TextView) rootView.findViewById(R.id.item_detail_description)).setText(getArguments().getString("description"));
-
+        if(getArguments().getBoolean("disable"))
+            rootView.findViewById(R.id.want_button).setVisibility(View.GONE);
 
         Button wantButton = (Button) rootView.findViewById(R.id.want_button);
         wantButton.setOnClickListener(new View.OnClickListener() {

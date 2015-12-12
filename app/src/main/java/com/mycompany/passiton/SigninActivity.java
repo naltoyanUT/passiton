@@ -95,6 +95,7 @@ public class SigninActivity extends Activity {
                         // Application code
                         Log.v(TAG, response.toString());
                         friends = new ArrayList<Friend>(); //reset
+                        if(object == null) return;
                         for (int i = 0, size = object.length(); i < size; i++) {
                             JSONObject friend = null;
                             try {
@@ -141,6 +142,7 @@ public class SigninActivity extends Activity {
                     new GraphRequest.Callback() {
                         public void onCompleted(GraphResponse response) {
                             JSONObject json = response.getJSONObject();
+                            if(json == null) return;
                             try {
                                 name = json.getString("name");
                                 email = json.getString("email");

@@ -22,6 +22,7 @@ import org.json.JSONObject;
 public class ItemDetailActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
+    boolean disableWant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
             String name = getIntent().getStringExtra("name");
             String key = getIntent().getStringExtra("key");
+            disableWant = getIntent().getBooleanExtra("disable", false);
 
             poplulateDetails(key, name);
 
@@ -92,11 +94,11 @@ public class ItemDetailActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
 
-                            Log.i("offers", lat+","+lon);
+                            Log.i("offers", lat + "," + lon);
 
-                            if(lat.equals("0.0") && lon.equals("0.0"))
+                            if (lat.equals("0.0") && lon.equals("0.0"))
                                 Snackbar.make(view, "No location was provided for this item", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
+                                        .setAction("Action", null).show();
                             else {
                                 Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + lat + "," + lon + "(" + name + ")");
                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -116,6 +118,8 @@ public class ItemDetailActivity extends AppCompatActivity {
                     arguments.putString("owner", SigninActivity.getFriendName(owner));
                     arguments.putString("date", date);
                     arguments.putString("description", description);
+
+                    arguments.putBoolean("disable", disableWant);
 
                     ItemDetailFragment fragment = new ItemDetailFragment();
                     fragment.setArguments(arguments);
