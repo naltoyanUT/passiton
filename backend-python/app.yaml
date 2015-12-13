@@ -1,0 +1,19 @@
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+# Handlers match in order, put above the default handler.
+handlers:
+
+
+- url: /
+  script: passiton.app
+
+- url: /.*
+  script: passiton.app
+  
+
+libraries:
+- name: webapp2
+  version: latest
